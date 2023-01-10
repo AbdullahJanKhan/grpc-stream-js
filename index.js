@@ -33,9 +33,13 @@ function main() {
 
   const credentials = getServerCredentials();
 
-  server.bindAsync("0.0.0.0:8050", credentials, () => {
+  server.bindAsync("0.0.0.0:8050", credentials, (err, port) => {
+    if (err) {
+      console.error(err)
+      return
+    }
     server.start();
-    console.log("Server running at http://0.0.0.0:8050");
+    console.log(`Server running at http://0.0.0.0:${port}`);
   });
 }
 
