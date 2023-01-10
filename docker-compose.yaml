@@ -7,3 +7,4 @@ services:
       - ./certs:/certs
     ports:
       - 8005:80
+    restart: always
