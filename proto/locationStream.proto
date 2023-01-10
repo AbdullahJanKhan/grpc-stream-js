@@ -1,0 +1,20 @@
+syntax = 'proto3';
+
+package locationTrackingApp;
+option java_multiple_files = true;
+option java_package = "org.grpc.locationtrackingapp";
+
+// Our Book service definition.
+service Location {
+    rpc updateLocation (stream LoactionReq) returns (LoactionRes);
+}
+
+// Our BookItem message definition.
+message LoactionReq {
+    string driverId = 1;
+    string longitude = 2;
+    string latitudes = 3;
+}
+
+message LoactionRes {
+}

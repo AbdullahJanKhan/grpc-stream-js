@@ -1,0 +1,25 @@
+{
+  "name": "grpc-js-tls",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:mutual": "TLS_MODE=mutual GRPC_TRACE=all GRPC_VERBOSITY=DEBUG node index.js",
+    "start:server": "TLS_MODE=server GRPC_TRACE=all GRPC_VERBOSITY=DEBUG ts-node ./src/index.ts",
+    "client:server": "TLS_MODE=server ts-node ./src/client.ts",
+    "client:mutual": "TLS_MODE=mutual ts-node ./src/client.ts",
+    "certs": "cd certs && ./gen-certs.sh",
+    "proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=env=node,outputServices=grpc-js --ts_proto_out=./src/generated ./proto/tls_service.proto",
+    "build": "npm run proto && npm run certs"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "1.7.3",
+    "@grpc/proto-loader": "^0.7.4",
+    "google-protobuf": "^3.21.2",
+    "grpc-web": "^1.4.2",
+    "xhr2": "^0.2.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

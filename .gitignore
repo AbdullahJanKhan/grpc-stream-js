@@ -1,0 +1,5 @@
+node_modules/
+certs/*.srl
+certs/*.pem
+certs/*.cnf
+node_modules/
