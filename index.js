@@ -33,7 +33,7 @@ function main() {
 
   const credentials = getServerCredentials();
 
-  server.bindAsync("0.0.0.0:50050", credentials, (err, port) => {
+  server.bindAsync("0.0.0.0:50051", credentials, (err, port) => {
     if (err) {
       console.error(err)
       return
