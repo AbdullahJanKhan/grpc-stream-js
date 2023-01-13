@@ -28,41 +28,15 @@ function main() {
     console.log(res)
   });
 
-  stream.write({
-    driverId: "driver_id_2",
-    longitude: "2.2",
-    latitudes: "3.1"
-  });
-  stream.write({
-    driverId: "driver_id_2",
-    longitude: "2.3",
-    latitudes: "3.1"
-  });
-  stream.write({
-    driverId: "driver_id_1",
-    longitude: "2.5",
-    latitudes: "3.1"
-  });
-  stream.write({
-    driverId: "driver_id_1",
-    longitude: "2.7",
-    latitudes: "3.1"
-  });
-  stream.write({
-    driverId: "driver_id_1",
-    longitude: "2.6",
-    latitudes: "3.1"
-  });
-  stream.write({
-    driverId: "driver_id_1",
-    longitude: "2.6",
-    latitudes: "3.2"
-  });
-  stream.write({
-    driverId: "driver_id_1",
-    longitude: "2.6",
-    latitudes: "3.3"
-  });
+  for (let i = 0; i < 10; i++) {
+    stream.write({
+      driverId: "driver",
+      longitude: "2." + i,
+      latitudes: "3.1"
+    });
+  }
+
+
   stream.end();
 }
 
