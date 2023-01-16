@@ -38,6 +38,20 @@ function main() {
 
 
   stream.end();
+
+  const data = {
+    driverId: "1",
+  }
+
+  var getStream = client.getLocations(data)
+
+  getStream.on("data", (data) => {
+    console.log(data)
+  })
+
+  getStream.on("end", () => {
+    console.log("Driver Reached")
+  })
 }
 
 main();

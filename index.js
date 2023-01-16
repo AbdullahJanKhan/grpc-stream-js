@@ -1,7 +1,6 @@
 const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
 const fs = require("fs");
-const path = require("path");
 
 function getServerCredentials() {
   const serverCert = fs.readFileSync("./certs/server-cert.pem");
@@ -29,6 +28,7 @@ function main() {
   // Add the service
   server.addService(locationTrackingApp.Location.service, {
     updateLocation: updateLocation,
+    getLocations: getLocations,
   });
 
   const credentials = getServerCredentials();
@@ -70,6 +70,24 @@ function updateLocation(call, callback) {
     console.log(driverLocations)
     callback(null, {});
   });
+}
+
+function getLocations(call) {
+
+  console.log(call.request)
+  const id = call.request.driverId
+
+  for (let i = 0; i < 10; i++) {
+    let res = {
+      longitude: "1." + i,
+      latitudes: "0.2"
+    }
+    console.log(res)
+    call.write(res)
+  }
+
+  call.end()
+
 }
 
 main();
