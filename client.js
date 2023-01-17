@@ -16,7 +16,7 @@ function main() {
   const locationTrackingApp =
     grpc.loadPackageDefinition(packageDefinition).locationTrackingApp;
   const client = new locationTrackingApp.Location(
-    "52.215.42.249:8000",
+    "grpc.faras.com:8000",
     getChannelCredentials()
   );
 
