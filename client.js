@@ -16,7 +16,7 @@ function main() {
   const locationTrackingApp =
     grpc.loadPackageDefinition(packageDefinition).locationTrackingApp;
   const client = new locationTrackingApp.Location(
-    "localhost:8000",
+    "52.215.42.249:8000",
     getChannelCredentials()
   );
 
@@ -43,15 +43,15 @@ function main() {
     driverId: "1",
   }
 
-  var getStream = client.getLocations(data)
+  // var getStream = client.getLocations(data)
 
-  getStream.on("data", (data) => {
-    console.log(data)
-  })
+  // getStream.on("data", (data) => {
+  //   console.log(data)
+  // })
 
-  getStream.on("end", () => {
-    console.log("Driver Reached")
-  })
+  // getStream.on("end", () => {
+  //   console.log("Driver Reached")
+  // })
 }
 
 main();
