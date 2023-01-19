@@ -1,6 +1,8 @@
 const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
 const fs = require("fs");
+let health = require('grpc-js-health-check');
+const _ = require('lodash');
 
 function getChannelCredentials() {
   const rootCert = fs.readFileSync("./certs/ca-cert.pem");
@@ -16,9 +18,30 @@ function main() {
   const locationTrackingApp =
     grpc.loadPackageDefinition(packageDefinition).locationTrackingApp;
   const client = new locationTrackingApp.Location(
-    "52.215.42.249:8000",
+    "localhost:50051",
     getChannelCredentials()
   );
+  const packageName = 'grpc.health.v1';
+  const serviceName = 'Health';
+  const protoPath = "./proto/health.proto"
+
+  const packageDef = protoLoader.loadSync(
+    protoPath,
+    {
+      keepCase: false,
+      longs: String,
+      enums: String,
+      defaults: true,
+      oneofs: true,
+    },
+  );
+  const GrpcService = _.get(grpc.loadPackageDefinition(packageDef), packageName)[serviceName];
+  var healthClient = new GrpcService("localhost:50051", getChannelCredentials());
+  healthClient.check({ service: "locationTrackingApp.Location" }, (err, response) => {
+    if (err)
+      console.error(err)
+    console.log(response)
+  })
 
   const stream = client.updateLocation((error, res) => {
     if (error) {

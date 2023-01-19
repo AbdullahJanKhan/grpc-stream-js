@@ -1,6 +1,9 @@
 const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
 const fs = require("fs");
+let health = require('grpc-js-health-check');
+var http = require('http');
+
 
 function getServerCredentials() {
   const serverCert = fs.readFileSync("./certs/server-cert.pem");
@@ -19,9 +22,21 @@ function getServerCredentials() {
   return serverCredentials;
 }
 
+http.createServer(function (req, res) {
+  res.writeHead(200, { 'Content-Type': 'text/html' });
+  res.write('Hello World!');
+  res.end();
+}).listen(50052);
+
 function main() {
   const server = new grpc.Server();
   const packageDefinition = protoLoader.loadSync("./proto/locationStream.proto", {});
+  const statusMap = {
+    "locationTrackingApp.Location": health.servingStatus.SERVING,
+    "": health.servingStatus.SERVING,
+  };
+  // Construct the service implementation
+  let healthImpl = new health.Implementation(statusMap);
 
   const locationTrackingApp =
     grpc.loadPackageDefinition(packageDefinition).locationTrackingApp;
@@ -30,6 +45,7 @@ function main() {
     updateLocation: updateLocation,
     getLocations: getLocations,
   });
+  server.addService(health.service, healthImpl);
 
   const credentials = getServerCredentials();
 
