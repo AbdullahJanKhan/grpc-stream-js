@@ -24,7 +24,7 @@ function getServerCredentials() {
 
 http.createServer(function (req, res) {
   res.writeHead(200, { 'Content-Type': 'text/html' });
-  res.write('Hello World!');
+  res.write('HTTP Connection Healthy');
   res.end();
 }).listen(50052);
 
