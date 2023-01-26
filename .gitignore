@@ -3,3 +3,6 @@ certs/*.srl
 certs/*.pem
 certs/*.cnf
 node_modules/
+.vscode/
+.env
+package-lock.json

@@ -2,8 +2,33 @@ const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
 const fs = require("fs");
 let health = require('grpc-js-health-check');
-var http = require('http');
 
+require('dotenv').config()
+
+var mongoose = require('mongoose');
+mongoose.set('strictQuery', true);
+const connection = mongoose.connect(process.env.MONGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+connection.then((db) => {
+  console.log("===Connected correctly to server===\n");
+}, (err) => { console.log(err); });
+
+var Schema = mongoose.Schema;
+var Loaction = new Schema({
+  driverId: {
+    type: String,
+  },
+  longitude: {
+    type: String
+  },
+  latitude: {
+    type: String
+  }
+})
+
+const locationsDB = mongoose.model('Loaction', Loaction);
 
 function getServerCredentials() {
   const serverCert = fs.readFileSync("./certs/server-cert.pem");
@@ -21,12 +46,6 @@ function getServerCredentials() {
   );
   return serverCredentials;
 }
-
-http.createServer(function (req, res) {
-  res.writeHead(200, { 'Content-Type': 'text/html' });
-  res.write('HTTP Connection Healthy');
-  res.end();
-}).listen(50052);
 
 function main() {
   const server = new grpc.Server();
@@ -79,30 +98,45 @@ function updateLocation(call, callback) {
         latitudes: req.latitudes
       })
     }
+    const loc = new locationsDB({
+      driverId: req.driverId,
+      latitude: req.latitudes,
+      longitude: req.longitude
+    })
+
+    loc.save((err, data) => {
+      if (err) {
+        console.error(err)
+      }
+    })
   })
 
+
   call.on('end', () => {
-    console.log("Stream Completed")
-    console.log(driverLocations)
+    console.log("===Stream Completed===")
     callback(null, {});
   });
 }
 
 function getLocations(call) {
 
-  console.log(call.request)
   const id = call.request.driverId
-
-  for (let i = 0; i < 10; i++) {
-    let res = {
-      longitude: "1." + i,
-      latitudes: "0.2"
+  locationsDB.find({
+    'driverId': id
+  }, (err, res) => {
+    if (err)
+      console.error(err)
+    if (res.length > 0) {
+      res.forEach((data) => {
+        let res = {
+          longitude: data.longitude,
+          latitudes: data.latitude
+        }
+        call.write(res)
+      })
     }
-    console.log(res)
-    call.write(res)
-  }
-
-  call.end()
+    call.end()
+  })
 
 }
 
